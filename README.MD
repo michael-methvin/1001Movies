@@ -1,11 +1,3 @@
-Next session: finish the walking skeleton
-
- Confirm docker --version and docker compose version work in PowerShell
- Write docker-compose.yml at the repo root
- Fill in datasource and jpa in application.yml
- Reload Gradle, create db/migration/, boot the app, and read the logs for the connection
- Root .gitignore and first commit (if not done yet), then commit the skeleton
-
 Backend foundations
 
  Add a trivial ping endpoint with a test
