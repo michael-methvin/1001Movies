@@ -1,8 +1,5 @@
 Backend foundations
 
- Add a trivial ping endpoint with a test
- Design the tables (movies, users, ratings, watch history) and write the first Flyway migration
- Entities and repositories, with a few derived queries typed from memory
  Seed the movie list through a migration
  Daily pick logic (no repeats per user)
  Validation and a global exception handler
