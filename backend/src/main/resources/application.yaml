@@ -9,3 +9,8 @@ spring:
     hibernate:
       ddl-auto: validate
     open-in-view: false
+
+app:
+  seed:
+    enabled: true
+    file: classpath:seed/sample_movies.csv
