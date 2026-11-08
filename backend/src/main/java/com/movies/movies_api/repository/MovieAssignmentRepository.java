@@ -11,4 +11,6 @@ public interface MovieAssignmentRepository extends JpaRepository<MovieAssignment
     
     Optional<MovieAssignment> getByAssignmentDateAndUserId(LocalDate date, Long userId);
     boolean existsByAssignmentDateAndUserId(LocalDate date, Long userId);
+
+    
 }
