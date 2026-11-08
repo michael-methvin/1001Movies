@@ -72,7 +72,23 @@ public class Seeder implements CommandLineRunner {
                       movie.setTitle(record.get("Title"));
                       movies.add(movie);
                     }
-                    log.info("Parsed " + movies.size() + " movies from the seed file.");
+                    log.info("Parsed {} movies from the seed file.", movies.size());
+
+                    int savedCount = 0;
+                    int skippedCount = 0;
+                    for (Movie movie : movies) {
+
+                        if (!movieRepository.existsByTitleAndReleaseYear(movie.getTitle(), movie.getReleaseYear())) {
+                            movieRepository.save(movie);
+                            savedCount++;
+                            log.debug("Saved movie: {} ({})", movie.getTitle(), movie.getReleaseYear());
+                        } else {
+                            log.debug("Movie already exists: {} ({})", movie.getTitle(), movie.getReleaseYear());
+                            skippedCount++;
+                        }
+                    }
+                    log.info("Seeding completed. Total movies saved: {}, Skipped: {}", savedCount, skippedCount);
+
                 }
                 
             } 

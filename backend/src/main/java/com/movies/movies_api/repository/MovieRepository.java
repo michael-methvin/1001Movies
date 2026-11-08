@@ -6,4 +6,6 @@ import com.movies.movies_api.model.Movie;
 
 public interface MovieRepository extends JpaRepository<Movie, Long> {
     
+
+    boolean existsByTitleAndReleaseYear(String title, int releaseYear);
 }

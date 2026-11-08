@@ -1,6 +1,5 @@
 Backend foundations
 
- Seed the movie list through a migration
  Daily pick logic (no repeats per user)
  Validation and a global exception handler
  Ratings and stats endpoints
