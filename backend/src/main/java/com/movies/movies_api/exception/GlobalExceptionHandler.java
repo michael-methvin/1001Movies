@@ -13,5 +13,11 @@ public class GlobalExceptionHandler {
         
         return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
     }
+
+    @ExceptionHandler (NoUserExistsException.class)
+    public ProblemDetail handleNoUser(NoUserExistsException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
     
 }

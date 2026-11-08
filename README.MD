@@ -1,7 +1,6 @@
 Backend foundations
 
- Daily pick logic (no repeats per user)
- Validation and a global exception handler
+ Validation of pick system
  Ratings and stats endpoints
  Auth
 
@@ -17,4 +16,4 @@ Later
  TMDB integration with caching
  GitHub Actions CI
  README with design decisions
- Deploy with a hosted Postgre
+ Deploy with a hosted Postgres
