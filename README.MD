@@ -1,6 +1,5 @@
 Backend foundations
 
- Validation of pick system
  Ratings and stats endpoints
  Auth
 
