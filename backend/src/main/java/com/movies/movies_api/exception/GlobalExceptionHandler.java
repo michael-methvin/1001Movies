@@ -18,6 +18,18 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleNoUser(NoUserExistsException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
     }
+    @ExceptionHandler (UserMismatchException.class)
+    public ProblemDetail handleUserMismatch(UserMismatchException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+    }
+    @ExceptionHandler (RatingAlreadyExistsException.class)
+    public ProblemDetail handleRatingDuplicate(RatingAlreadyExistsException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+    }
+    @ExceptionHandler (MovieAssignmentDoesNotExistException.class)
+    public ProblemDetail handleNoMovieAssignment(MovieAssignmentDoesNotExistException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
 
     
 }
