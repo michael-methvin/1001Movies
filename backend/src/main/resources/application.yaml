@@ -14,3 +14,5 @@ app:
   seed:
     enabled: true
     file: classpath:seed/sample_movies.csv
+  jwt:
+    secret: ${JWT_SECRET}
