@@ -30,6 +30,17 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleNoMovieAssignment(MovieAssignmentDoesNotExistException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
     }
+    @ExceptionHandler (NoUserExistsException.class)
+    public ProblemDetail handleUserDoesNotExist(NoUserExistsException ex) {
+       return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+
+    }
+    @ExceptionHandler(UserAlreadyRegisteredException.class)
+    public ProblemDetail handleUserAlreadyRegistered(UserAlreadyRegisteredException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+
+
+    }
 
     
 }
