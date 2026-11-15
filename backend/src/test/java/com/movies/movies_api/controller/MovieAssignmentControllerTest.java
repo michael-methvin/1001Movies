@@ -27,6 +27,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+
 import org.springframework.http.MediaType;
 
 @WebMvcTest(MovieAssignmentController.class)
@@ -42,8 +45,9 @@ class MovieAssignmentControllerTest {
 
         // No User exists
         when(movieAssignmentService.getDailyAssignmentForUser(124L)).thenThrow(new NoUserExistsException(124L));
-        mockMvc.perform(get("/api/assignments/daily").param("userId","124"))
+        mockMvc.perform(get("/api/assignments/daily").with(jwt().jwt(j -> j.subject("124"))))
         .andExpect(status().isNotFound());
+
 
     }
     @Test 
@@ -52,7 +56,7 @@ class MovieAssignmentControllerTest {
 
         when(movieAssignmentService.getDailyAssignmentForUser(123L)).thenThrow(new NoUnassignedMoviesException(123L));
         
-        mockMvc.perform(get("/api/assignments/daily").param("userId","123"))
+        mockMvc.perform(get("/api/assignments/daily").with(jwt().jwt(j -> j.subject("123"))))
         .andExpect(status().isConflict());
     }
 
@@ -64,7 +68,8 @@ class MovieAssignmentControllerTest {
 
             when(movieAssignmentService.getDailyAssignmentForUser(123L)).thenReturn(response);
 
-            mockMvc.perform(get("/api/assignments/daily").param("userId","123"))
+            mockMvc.perform(get("/api/assignments/daily")
+            .with(jwt().jwt(j -> j.subject("123"))))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.title").value("Title in progress"))
             .andExpect(jsonPath("$.releaseYear").value(1970))
@@ -82,7 +87,7 @@ class MovieAssignmentControllerTest {
         when(ratingService.createRating(124L, 125L, request)).thenReturn(happyResponse);
 
         mockMvc.perform(post("/api/assignments/124/rating")
-                .param("userId","125")
+                .with(jwt().jwt(j -> j.subject("125")))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"score\": 10, \"review\": \"Great\"}"))                
                 .andExpect(status().isCreated())
@@ -100,7 +105,7 @@ class MovieAssignmentControllerTest {
         when(ratingService.createRating(124L, 125L, request)).thenThrow(new RatingAlreadyExistsException(124L));
 
         mockMvc.perform(post("/api/assignments/124/rating")
-            .param("userId", "125")
+            .with(jwt().jwt(j -> j.subject("125")))
             .contentType(MediaType.APPLICATION_JSON)
             .content("{\"score\": 10, \"review\": \"Great\"}"))
             .andExpect(status().isConflict());
@@ -111,7 +116,7 @@ class MovieAssignmentControllerTest {
 
 
         mockMvc.perform(post("/api/assignments/124/rating")
-            .param("userId", "125")
+            .with(jwt().jwt(j -> j.subject("125")))           
             .contentType(MediaType.APPLICATION_JSON)
             .content("{\"score\": 11, \"review\": \"Great\"}"))
             .andExpect(status().isBadRequest());
@@ -128,10 +133,29 @@ class MovieAssignmentControllerTest {
         when(ratingService.createRating(124L, 125L, request)).thenThrow(new UserMismatchException(123L,125L));
 
         mockMvc.perform(post("/api/assignments/124/rating")
-            .param("userId", "125")
+            .with(jwt().jwt(j -> j.subject("125")))           
             .contentType(MediaType.APPLICATION_JSON)
             .content("{\"score\": 10, \"review\": \"Great\"}"))
             .andExpect(status().isConflict());
 
+    }
+
+    @Test
+    void dailyWithoutTokenReturnsUnauthorized() throws Exception {
+        mockMvc.perform(get("/api/assignments/daily"))
+                .andExpect(status().isUnauthorized());
+
+        verify(movieAssignmentService, never()).getDailyAssignmentForUser(any());
+    }
+
+    @Test
+    void ratingWithoutTokenReturnsUnauthorized() throws Exception {
+        mockMvc.perform(post("/api/assignments/124/rating")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"score\": 10, \"review\": \"Great\"}"))
+                .andExpect(status().isUnauthorized());
+
+        verify(ratingService, never()).createRating(any(), any(), any());
     }
 }
